@@ -30,9 +30,9 @@ Function Write-ASCPrivilegeJSONData
         "AUTHENTICATED USERS" { $Accounts += "NT AUTHORITY\AUTHENTICATED USERS" }
         "Administrators" { $Accounts += "BUILTIN\Administrators" }
         "NETWORK SERVICE" { $Accounts += "NT AUTHORITY\NETWORK SERVICE" }
-        "NT AUTHORITY\Local account and member of Administrators group" { $Accounts += "[Local Account|Administrator]" }
-        "NT AUTHORITY\Local account" { $Accounts += "[Local Account]"}
-        "Local account" { $Accounts += "[Local Account]"}
+        "NT AUTHORITY\Local account and member of Administrators group" { $Accounts += "Local account and member of Administrators group" }
+        "NT AUTHORITY\Local account" { $Accounts += "Local Account"}
+        "Local account" { $Accounts += "Local Account"}
         "Guests" { $Accounts += "BUILTIN\Guests"}
         "Backup Operators" { $Accounts += "BUILTIN\Backup Operators"}
         "NT SERVICE\WdiServiceHost" { $Accounts += "NT SERVICE\WdiServiceHost" }
