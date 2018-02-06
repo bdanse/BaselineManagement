@@ -1055,7 +1055,7 @@ function ConvertFrom-ASC
                 
                 "System Access"
                 {
-
+                    $ConfigString += Write-ASCSystemAccessJSONData -SystemAccessData $Policy
                 }
             }
         }
@@ -1274,6 +1274,7 @@ function ConvertFrom-ASC
                 
                 "Privilege Rights"
                 {            
+
                     $ConfigString += Write-ASCPrivilegeJSONData -PrivilegeData $Policy
                 }
                 
@@ -1285,11 +1286,13 @@ function ConvertFrom-ASC
                 "Registry Keys"
                 {
 
+                    $ConfigString += Write-ASCPrivilegeJSONData -PrivilegeData $Policy
                 }
                 
                 "System Access"
                 {
 
+                    $ConfigString += Write-ASCSystemAccessJSONData -SystemAccessData $Policy
                 }
             }
         }
