@@ -23,6 +23,7 @@ Function Write-ASCPrivilegeJSONData
     switch (($PrivilegeData.ExpectedValue -split ", "))
     {
         "No One" { $Accounts = ""; break }
+        "0" { $Accounts = ""; break }
         "SERVICE" { $Accounts += "NT AUTHORITY\SERVICE" } 
         "NEW_VALUE" { }
         "LOCAL SERVICE" { $Accounts += "NT AUTHORITY\LOCAL SERVICE" }
@@ -31,16 +32,19 @@ Function Write-ASCPrivilegeJSONData
         "NETWORK SERVICE" { $Accounts += "NT AUTHORITY\NETWORK SERVICE" }
         "NT AUTHORITY\Local account and member of Administrators group" { $Accounts += "[Local Account|Administrator]" }
         "NT AUTHORITY\Local account" { $Accounts += "[Local Account]"}
+        "Local account" { $Accounts += "[Local Account]"}
         "Guests" { $Accounts += "BUILTIN\Guests"}
         "Backup Operators" { $Accounts += "BUILTIN\Backup Operators"}
+        "NT SERVICE\WdiServiceHost" { $Accounts += "NT SERVICE\WdiServiceHost" }
+        "Remote Desktop Users" { $Accounts += "BUILTIN\Remote Desktop Users" }
         Default { Write-Warning "Found a new Account Value for JSONPrivilege: $_" }
     }
                                 
     $policyHash = @{}
-    if ([string]::IsNullOrEmpty($Accounts))
-    {
+    #if ([string]::IsNullOrEmpty($Accounts))
+    #{
         $policyHash.Force = $true
-    }    
+    #}    
     
     $policyHash.Policy = $Privilege
     $policyHash.Identity = $Accounts                    
