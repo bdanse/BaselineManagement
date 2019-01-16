@@ -15,7 +15,7 @@ Function Write-ASCSystemAccessJSONData
 
         if ($AccountPolicySettings.ContainsKey($SysemAccess))
         {
-            $Type = "AccountPolicy" 
+            $Type = "AccountPolicy"
             $internalSettingName =  $AccountPolicySettings[$SysemAccess]
         }
         else
@@ -41,10 +41,9 @@ Function Write-ASCSystemAccessJSONData
         return ""
     }
 
-                 
-                    
-    return Write-DSCString -Resource -Name "$($SystemAccessData.CCEID): $($SystemAccessData.ruleName)" -Type $Type -Parameters $policyHash -CommentOUT:($SystemAccessData.State -ne 'Enabled') -DoubleQuoted
-   
-}
 
+
+    return Write-DSCString -Resource -Name "$($SystemAccessData.CCEID): $($SystemAccessData.ruleName)" -Type $Type -Parameters $policyHash -CommentOUT:($SystemAccessData.State -ne 'Enabled') -DoubleQuoted
+
+}
 

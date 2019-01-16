@@ -20,11 +20,11 @@ Function Write-ASCPrivilegeJSONData
     }
 
     $Accounts = @()
-    switch (($PrivilegeData.ExpectedValue -split ", "))
+    switch (($PrivilegeData.ExpectedValue -split ",\s*"))
     {
         "No One" { $Accounts = ""; break }
         "0" { $Accounts = ""; break }
-        "SERVICE" { $Accounts += "NT AUTHORITY\SERVICE" } 
+        "SERVICE" { $Accounts += "NT AUTHORITY\SERVICE" }
         "NEW_VALUE" { }
         "LOCAL SERVICE" { $Accounts += "NT AUTHORITY\LOCAL SERVICE" }
         "AUTHENTICATED USERS" { $Accounts += "NT AUTHORITY\AUTHENTICATED USERS" }
@@ -35,19 +35,20 @@ Function Write-ASCPrivilegeJSONData
         "Local account" { $Accounts += "[Local Account]"}
         "Guests" { $Accounts += "BUILTIN\Guests"}
         "Backup Operators" { $Accounts += "BUILTIN\Backup Operators"}
+        "Server Operators" { $Accounts += "BUILTIN\Server Operators"}
         "NT SERVICE\WdiServiceHost" { $Accounts += "NT SERVICE\WdiServiceHost" }
+        "NT VIRTUAL MACHINE\\Virtual Machines" { $Accounts += "NT VIRTUAL MACHINE\Virtual Machines" }
         "Remote Desktop Users" { $Accounts += "BUILTIN\Remote Desktop Users" }
+        "Print Operators" { $Accounts += "BUILTIN\Print Operators" }
+        "IIS APPPOOL\DefaultAppPool" { $Accounts += "IIS APPPOOL\DefaultAppPool" }
         Default { Write-Warning "Found a new Account Value for JSONPrivilege: $_" }
     }
-                                
+
     $policyHash = @{}
-    #if ([string]::IsNullOrEmpty($Accounts))
-    #{
-        $policyHash.Force = $true
-    #}    
-    
+    $policyHash.Force = $true
+
     $policyHash.Policy = $Privilege
-    $policyHash.Identity = $Accounts                    
-                    
+    $policyHash.Identity = $Accounts
+
     return Write-DSCString -Resource -Name "$($PrivilegeData.CCEID): $($PrivilegeData.ruleName)" -Type UserRightsAssignment -Parameters $policyHash -CommentOUT:($PrivilegeData.State -ne 'Enabled') -DoubleQuoted
 }

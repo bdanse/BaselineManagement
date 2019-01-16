@@ -52,7 +52,7 @@ Describe "Write-GPORegistryXMLData" {
                     $Parameters.Type | Should Be "Registry"
                     [string]::IsNullOrEmpty($Parameters.Parameters.ValueName) | Should Be $false
                     Test-Path -Path $Parameters.Parameters.Key -IsValid | Should Be $true
-                    $TypeHash = @{"Binary" = [byte]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
+                    $TypeHash = @{"Binary" = [string]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
                     ($Parameters.Parameters.ValueType -in @($TypeHash.Keys)) | Should Be $true
                     Write-Host $Parameters.Parameter.ValueType
                     $Parameters.Parameters.ValueData | Should BeOfType $TypeHash[$Parameters.Parameters.ValueType]
@@ -139,15 +139,62 @@ Describe "Write-GPOAuditCSVData" {
                 }
             }
 
-            "^(Success|Failure)$"
+            "^Success$"
             {
-                Context $Parameters.Name {
-                    It "Parses Audit Data" {
-                        $Parameters.Type | Should Be AuditPolicySubcategory
-                        $Parameters.Parameters.SubCategory | Should Be $Entry.Name
-                        $Parameters.Parameters.AuditFlag | Should Be $_
-                        $Parameters.Parameters.Ensure | Should Be "Present"
-                        [string]::IsNullOrEmpty($Parameters.Name) | Should Be $false
+                It "Creates an opposite Failure Entry for Succes" {
+                    $Parameters.Count | Should Be 2
+                }
+                
+                $Success = $Parameters.Where( {$_.Parameters.AuditFlag -eq "Success"})
+                $Failure = $Parameters.Where( {$_.Parameters.AuditFlag -eq "Failure"})
+
+                Context $Success.Name {
+                    It "Creates the SuccessBlock" {
+                        $Success.Type | Should Be AuditPolicySubcategory
+                        $Success.Parameters.SubCategory | Should Be $Entry.Name
+                        $Success.Parameters.AuditFlag | Should Be "Success"
+                        $Success.Parameters.Ensure | Should Be "Present"
+                        [string]::IsNullOrEmpty($Success.Name) | Should Be $false
+                    }
+                }
+
+                Context $Failure.Name {
+                    It "Creates the FailureBlock" {
+                        $Failure.Type | Should Be AuditPolicySubcategory
+                        $Failure.Parameters.SubCategory | Should Be $Entry.Name
+                        $Failure.Parameters.AuditFlag | Should Be "Failure"
+                        $Failure.Parameters.Ensure | Should Be "Absent"
+                        [string]::IsNullOrEmpty($Failure.Name) | Should Be $false
+                    }
+                }
+            }
+
+            "^Failure$"
+            {
+                It "Creates an opposite Success Entry for Failure" {
+                    $Parameters.Count | Should Be 2
+                }
+                
+                $Success = $Parameters.Where( {$_.Parameters.AuditFlag -eq "Success"})
+                $Failure = $Parameters.Where( {$_.Parameters.AuditFlag -eq "Failure"})
+
+                Context $Success.Name {
+                    It "Creates the SuccessBlock" {
+                        $Success.Type | Should Be AuditPolicySubcategory
+                        $Success.Parameters.SubCategory | Should Be $Entry.Name
+                        $Success.Parameters.AuditFlag | Should Be "Success"
+                        $Success.Parameters.Ensure | Should Be "Absent"
+                        [string]::IsNullOrEmpty($Success.Name) | Should Be $false
+                    }
+                }
+
+                Context $Failure.Name {
+                    It "Creates the FailureBlock" {
+                        $Failure.Type | Should Be AuditPolicySubcategory
+                        $Failure.Parameters.SubCategory | Should Be $Entry.Name
+                        $Failure.Parameters.AuditFlag | Should Be "Failure"
+                        $Failure.Parameters.Ensure | Should Be "Present"
+                        [string]::IsNullOrEmpty($Failure.Name) | Should Be $false
                     }
                 }
             }
@@ -257,7 +304,7 @@ Describe "Write-GPORegistryPOLData" {
                 {
                     $Parameters.Type | Should Be "Registry"
                     Test-Path -Path $Parameters.Parameters.Key -IsValid | Should Be $true
-                    $TypeHash = @{"Binary" = [byte]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
+                    $TypeHash = @{"Binary" = [string]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
                     if ($Parameters.Name.StartsWith("DELVAL"))
                     {
                         if ($ExlusiveFlagAvailable)
@@ -331,7 +378,7 @@ Describe "GPtTempl.INF Data" {
                                 $Parameters.Type | Should Be "Registry"
                                 [string]::IsNullOrEmpty($Parameters.Parameters.ValueName) | Should Be $false
                                 Test-Path -Path $Parameters.Parameters.Key -IsValid | Should Be $true
-                                $TypeHash = @{"Binary" = [byte]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
+                                $TypeHash = @{"Binary" = [string]; "Dword" = [int]; "ExpandString" = [string]; "MultiString" = [string]; "Qword" = [string]; "String" = [string]}
                                 ($Parameters.Parameters.ValueType -in @($TypeHash.Keys)) | Should Be $true
                                 $Parameters.Parameters.ValueData | Should BeOfType $TypeHash[$Parameters.Parameters.ValueType]
                                 [string]::IsNullOrEmpty($Parameters.Name) | Should Be $false
